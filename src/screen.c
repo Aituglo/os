@@ -1,5 +1,6 @@
 #include "screen.h"
 #include "string.h"
+#include "stdio.h"
 #include "stdlib.h"
 #include "cpu.h"
 
@@ -29,6 +30,8 @@ void clear_screen(void){
             *addr = 0b0000111100100000;
         }
     }
+
+    place_cursor(0, 0);
 }
 
 void place_cursor(uint32_t line, uint32_t col){
@@ -47,10 +50,14 @@ void place_cursor(uint32_t line, uint32_t col){
 }
 
 void write_top_right(char *s){
-    size_t size = sizeof(s) / sizeof(char*);
+    size_t size = 8;
 
     uint32_t line = 0;
-    uint32_t col = 79 - size;
+    uint32_t first_col = 80 - size;
+
+    for(int i = 0; i < size; i++){
+        write_char(line, first_col + i, s[i]);
+    }
 }
 
 void process_char(char c){
@@ -96,7 +103,7 @@ void process_char(char c){
             break;
     }
 
-    if(current_line = 24){
+    if(current_line == 24){
         scroll();
     }
     

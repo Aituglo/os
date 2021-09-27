@@ -1,40 +1,55 @@
 #include <cpu.h>
+#include <process.h>
+#include <interruptions.h>
 #include <screen.h>
 #include <stdio.h>
 #include <inttypes.h>
 
-// on peut s'entrainer a utiliser GDB avec ce code de base
-// par exemple afficher les valeurs de x, n et res avec la commande display
-
-// une fonction bien connue
-uint32_t fact(uint32_t n)
-{
-    uint32_t res;
-    if (n <= 1) {
-        res = 1;
-    } else {
-        res = fact(n - 1) * n;
-    }
-    return res;
-}
+const uint32_t QUARTZ = 0x1234DD;
+const uint32_t CLOCKFREQ = 50;
 
 void kernel_start(void)
 {
-    uint32_t x = fact(5);
-    // quand on saura gerer l'ecran, on pourra afficher x
-    (void)x;
-
     clear_screen();
 
-    printf("test\n");
-    printf("test\n");
-    printf("test\n");
-    printf("test\n");
-    printf("test\n");
-    printf("test\n");
+    // *** DEBUT GESTION HORLOGE ***
 
-    scroll();
-    scroll();
+    // Reglage de l'horloge
+    outb(0x34, 0x43);
+    outb((QUARTZ / CLOCKFREQ) % 256, 0x40);
+    outb((QUARTZ / CLOCKFREQ) / 256, 0x40);
+   
+    init_traitant_IT(32, traitant_IT_32);
+
+    masque_IRQ(0, 0);
+
+    // *** FIN GESTION HORLOGE **
+
+    // *** INITIALISATION PROCESSUS ***
+
+    struct process idle_process = {
+        0,
+        "idle",
+        RUNNING
+    };
+
+    add_process(idle_process);
+
+    struct process proc1_process = {
+        1,
+        "proc1",
+        RUNNABLE
+    };
+
+    add_process(proc1_process);
+
+    // *** FIN INITIALISATION PROCESSUS ***
+
+    // *** LANCEMENT DU PREMIER PROCESSUS ***
+    idle();
+
+    sti();
+
     // on ne doit jamais sortir de kernel_start
     while (1) {
         // cette fonction arrete le processeur

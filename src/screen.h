@@ -14,6 +14,8 @@ void process_char(char c);
 
 void scroll(void);
 
+void write_top_right(char *s);
+
 void console_putbytes(const char *s, int len);
 
 #endif
