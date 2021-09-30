@@ -16,8 +16,6 @@ struct process{
 
 void add_process(struct process new_process);
 
-
-
 void idle(void);
 
 void proc1(void);
