@@ -1,11 +1,16 @@
 #include "stdio.h"
 #include "screen.h"
 #include "segment.h"
+#include "process.h"
 #include "interruptions.h"
 #include "cpu.h"
 
 // in ms
 int UPTIME = 0;
+
+int get_uptime(){
+    return UPTIME;
+}
 
 void tic_PIT(void){
     outb(0x20, 0x20);
@@ -27,6 +32,8 @@ void tic_PIT(void){
     sprintf(current_time,"%02d:%02d:%02d", hours, minutes, seconds);
 
     write_top_right(current_time);
+
+    ordonnance();
 }
 
 

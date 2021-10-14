@@ -3,6 +3,8 @@
 #ifndef __INTERRUPTION_H__
 #define __INTERRUPTION_H__
 
+int get_uptime(void);
+
 void tic_PIT(void);
 
 void traitant_IT_32(void);

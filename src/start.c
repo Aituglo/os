@@ -27,33 +27,23 @@ void kernel_start(void)
 
     // *** INITIALISATION PROCESSUS ***
 
-    struct process idle_process = {
-        0,
-        "idle",
-        RUNNING
-    };
+    init_process_list();
 
-    add_process(idle_process);
+    add_process("idle", idle);
+    actif = process_table[0];
 
-    struct process proc1_process = {
-        1,
-        "proc1",
-        RUNNABLE
-    };
-
-    add_process(proc1_process);
+    add_process("proc1", proc1);
+    add_process("proc2", proc2);
+    add_process("proc3", proc3);
+    add_process("proc4", proc4);
+    //add_process("proc5", proc5);
+    //add_process("proc6", proc6);
+    //add_process("proc7", proc7);
 
     // *** FIN INITIALISATION PROCESSUS ***
 
     // *** LANCEMENT DU PREMIER PROCESSUS ***
     idle();
 
-    sti();
-
-    // on ne doit jamais sortir de kernel_start
-    while (1) {
-        // cette fonction arrete le processeur
-        hlt();
-    }
 }
 
