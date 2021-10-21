@@ -9,7 +9,7 @@
 int UPTIME = 0;
 
 int get_uptime(){
-    return UPTIME;
+    return UPTIME / 1000;
 }
 
 void tic_PIT(void){

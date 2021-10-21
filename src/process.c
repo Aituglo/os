@@ -95,11 +95,11 @@ void ordonnance(void){
         destroy_dead();
     }
 
-    uint32_t time = get_uptime() / 1000;
+    uint32_t time = get_uptime();
     if(sleeping_list->head != NULL){
         struct process *sleeping_process = sleeping_list->head;
-        if(time / 1000 >= (sleeping_process->time)){
-            printf("Réveil !");
+        if(time >= (sleeping_process->time)){
+            printf("[Reveil] processus %s pid = %i\n", sleeping_process->name, sleeping_process->pid);
             remove_head(sleeping_list);
             insert_tail(runnable_list, sleeping_process->pid);
         }
@@ -137,8 +137,9 @@ void insert_sleep(){
         while(current->time <= (actif->time)){
             last = current;
             if(current == sleeping_list->tail){
-                sleeping_list->tail = actif;
                 current = NULL;
+                sleeping_list->tail = actif;
+                
                 break;
             }
             current = current->next;
@@ -156,15 +157,14 @@ void insert_sleep(){
 }
 
 void sleep(uint32_t time){
-
-    uint32_t new_time = ( get_uptime() / 1000 ) + time;
+    printf("[Dodo] processus %s pid = %i\n", mon_nom(), mon_pid());
+    uint32_t new_time = get_uptime() + time;
     actif->time = new_time;
     actif->state = SLEEPING;
 
     insert_sleep();
 
-    sti();
-    hlt();
+    ordonnance();
 }
 
 void fin_processus(void){
@@ -179,7 +179,9 @@ void fin_processus(void){
 }
 
 void destroy_dead(void){
+    
     int32_t pid = dead_list->head->pid; 
+    printf("[Mort] processus pid = %i\n", pid);
 
     free(process_table[pid]);
 
@@ -206,8 +208,10 @@ char *mon_nom(void){
 
 void idle(void)
 {
+    
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        //printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        //printf("%u", get_uptime());
         sti();
         hlt();
         cli();
@@ -216,7 +220,7 @@ void idle(void)
 
 void proc1(void)
 {
-    for (;;) {
+    for (uint32_t i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
         mon_nom(), mon_pid());
         sleep(2);
@@ -225,7 +229,7 @@ void proc1(void)
 
 void proc2(void)
 {
-    for (;;) {
+    for (uint32_t i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
         mon_nom(), mon_pid());
         sleep(3);
@@ -234,7 +238,7 @@ void proc2(void)
 
 void proc3(void)
 {
-    for (;;) {
+    for (uint32_t i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
         mon_nom(), mon_pid());
         sleep(4);
@@ -243,7 +247,7 @@ void proc3(void)
 
 void proc4(void)
 {
-    for (;;) {
+    for (uint32_t i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
         mon_nom(), mon_pid());
         sleep(5);
