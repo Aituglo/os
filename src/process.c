@@ -208,16 +208,14 @@ char *mon_nom(void){
 
 void idle(void)
 {
-    
     for (;;) {
-        //printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        //printf("%u", get_uptime());
         sti();
         hlt();
         cli();
     }
 }
 
+/*
 void proc1(void)
 {
     for (uint32_t i = 0; i < 2; i++) {
@@ -226,30 +224,4 @@ void proc1(void)
         sleep(2);
     }
 }
-
-void proc2(void)
-{
-    for (uint32_t i = 0; i < 2; i++) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
-        mon_nom(), mon_pid());
-        sleep(3);
-    }
-}
-
-void proc3(void)
-{
-    for (uint32_t i = 0; i < 2; i++) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
-        mon_nom(), mon_pid());
-        sleep(4);
-    }
-}
-
-void proc4(void)
-{
-    for (uint32_t i = 0; i < 2; i++) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
-        mon_nom(), mon_pid());
-        sleep(5);
-    }
-}
+*/

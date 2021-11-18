@@ -110,6 +110,14 @@ void process_char(char c){
     place_cursor(current_line, current_col);
 }
 
+void print_prompt(void){
+    printf("shell>");
+}
+
+void print_startup(void){
+    printf("*** Welcome to CassimOS 1.0 ***\n\n");
+}
+
 void scroll(void){
     uint16_t *source = ptr_mem(1, 0);
     uint16_t *destination = ptr_mem(0, 0);

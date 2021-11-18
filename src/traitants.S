@@ -17,3 +17,13 @@ traitant_IT_32:
 # fin du traitant
     iret
 
+    .text
+# cette directive sert a rendre l'etiquette publique
+    .globl traitant_IT_9
+# debut du traitant 
+traitant_IT_9:
+    pusha
+	cld
+	call keyboard_PIT
+	popa
+	iret

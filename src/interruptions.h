@@ -7,7 +7,11 @@ int get_uptime(void);
 
 void tic_PIT(void);
 
+void keyboard_PIT(void);
+
 void traitant_IT_32(void);
+
+void traitant_IT_9(void);
 
 void init_traitant_IT(int32_t num_IT, void (*traitant)(void));
 

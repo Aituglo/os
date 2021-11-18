@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "os/kernel.bin",
+            "program": "src/kernel.bin",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

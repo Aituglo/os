@@ -4,6 +4,13 @@
 #include "process.h"
 #include "interruptions.h"
 #include "cpu.h"
+#include "keyboard_map.h"
+
+#define COMMAND_BUFFER_SIZE 100
+#define PROMPT_LENGTH 6
+
+char cmd_buffer[COMMAND_BUFFER_SIZE];
+int cmd_len = 0;
 
 // in ms
 int UPTIME = 0;
@@ -34,6 +41,66 @@ void tic_PIT(void){
     write_top_right(current_time);
 
     ordonnance();
+}
+
+bool streq(char* string1, int str1len, char* string2, int str2len) {
+	if (str1len != str2len) return false;
+	for (int i = 0; i < str1len; i++) {
+		if (string1[i] != string2[i]) return false;
+	}
+	return true;
+}
+
+void keyboard_PIT(void){
+    outb(0x20, 0x20);
+    
+    unsigned char status = inb(0x64);
+
+
+	if (status & 0x1) {
+		int keycode = inb(0x60);
+
+		if (keycode < 0 || keycode >= 128) return;
+
+		if (keycode == 28) {
+			// ENTER : Newline
+			current_line++;
+			current_col = 0;
+            if (streq(cmd_buffer, cmd_len, "ls", 2)) {
+				printf("Filesystem not yet implemented.\n");
+			} else if (streq(cmd_buffer, cmd_len, "clear", 5)) {
+				clear_screen();
+                current_line = 0;
+                current_col = 0;
+                place_cursor(current_line, current_col);
+                print_startup();
+			} else if (cmd_len < 1) {
+				// do nothing
+			} else {
+				printf("Command not found: ");
+				printf("%s\n", cmd_buffer);
+			}
+			cmd_len = 0;
+            place_cursor(current_line, current_col);
+            print_prompt();
+		} else if (keycode == 14) {
+			// BACKSPACE: Move back one unless on prompt
+            if (current_col > PROMPT_LENGTH) {
+				write_char(current_line, --current_col, (char)0);
+                place_cursor(current_line, current_col);
+                cmd_buffer[cmd_len] = keyboard_map[0];
+			}
+			
+		} else {
+			
+            if (cmd_len >= COMMAND_BUFFER_SIZE) return;
+
+			cmd_buffer[cmd_len++] = keyboard_map[keycode];
+
+			printf("%c", keyboard_map[keycode]);
+
+		}
+	}
 }
 
 
